@@ -1,34 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import "./App.css";
+import useToken from "./hooks/useToken";
+
+import { Dashboard, Login, Preferences } from "./components";
 
 function App() {
-  const [count, setCount] = useState(0)
+	const [token, setToken] = useState("");
+	console.log("token", token);
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+	if (!token) {
+		return (
+			<BrowserRouter>
+				<Routes>
+					<Route path="/" element={<Login setToken={setToken} />} />
+				</Routes>
+			</BrowserRouter>
+		);
+	}
+
+	return (
+		<div className="wrapper">
+			<BrowserRouter>
+				<Routes>
+					{!token ? (
+						<Route path="/" element={<Login setToken={setToken} />} />
+					) : (
+						<>
+							<Route path="/dashboard" element={<Dashboard />} />
+							<Route path="/preferences" element={<Preferences />} />
+						</>
+					)}
+				</Routes>
+			</BrowserRouter>
+		</div>
+	);
 }
 
-export default App
+export default App;
