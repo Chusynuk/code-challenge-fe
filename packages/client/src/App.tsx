@@ -10,7 +10,8 @@ import "./App.css";
 import AuthVerify from "./common/auth-verify";
 import { useToken } from "./hooks";
 
-import { Dashboard, Login } from "./components";
+import { useEffect } from "react";
+import { Dashboard, Login, Preferences } from "./components";
 
 interface IProtectedRoutes {
 	token: string;
@@ -31,36 +32,48 @@ const ProtectedRoute = ({
 };
 
 function App() {
+	return (
+		<BrowserRouter>
+			<MainComponent />
+		</BrowserRouter>
+	);
+}
+
+function MainComponent() {
+	const navigate = useNavigate();
 	const { token, setToken } = useToken();
 
 	const handleLogout = () => {
+		console.log("dentro");
 		setToken("");
-
-		const navigate = useNavigate();
-
-		useEffect(() => {
-			if (!token) {
-				navigate("/");
-			}
-		}, [token]);
+		console.log("navigate", navigate);
+		navigate("/login");
 	};
 
 	return (
 		<div className="wrapper">
-			<BrowserRouter>
-				<Routes>
-					<Route path="*" index element={<Login setToken={setToken} />} />
-					<Route
-						path="dashboard"
-						element={
-							<ProtectedRoute token={token}>
-								<Dashboard handleLogout={handleLogout} />
-							</ProtectedRoute>
-						}
-					/>
-				</Routes>
-				<AuthVerify handleLogout={handleLogout} />
-			</BrowserRouter>
+			{/* <BrowserRouter> */}
+			<Routes>
+				<Route path="*" element={<Login setToken={setToken} />} />
+				<Route
+					path="dashboard"
+					element={
+						<ProtectedRoute token={token}>
+							<Dashboard handleLogout={handleLogout} />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="preferences"
+					element={
+						<ProtectedRoute token={token}>
+							<Preferences />
+						</ProtectedRoute>
+					}
+				/>
+			</Routes>
+			<AuthVerify handleLogout={handleLogout} />
+			{/* </BrowserRouter> */}
 		</div>
 	);
 }
