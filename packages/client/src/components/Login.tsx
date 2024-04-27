@@ -1,6 +1,7 @@
 import axios from "axios";
 import type React from "react";
 import { type InputHTMLAttributes, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useToken from "../hooks/useToken";
 import "./Login.css";
 
@@ -30,6 +31,7 @@ const loginUser = async ({
 const Login = ({ setToken }) => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const navigate = useNavigate();
 	const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) =>
 		setEmail(event.target.value);
 	const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -51,6 +53,7 @@ const Login = ({ setToken }) => {
 			);
 
 			setToken(res.data.token);
+			navigate("/dashboard");
 		} catch (error) {
 			console.error(error);
 		}

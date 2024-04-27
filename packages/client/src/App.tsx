@@ -6,7 +6,7 @@ import {
 	Routes,
 } from "react-router-dom";
 import "./App.css";
-import useToken from "./hooks/useToken";
+import { useToken } from "./hooks";
 
 import { Dashboard, Login } from "./components";
 
