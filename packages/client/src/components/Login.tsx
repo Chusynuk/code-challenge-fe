@@ -5,32 +5,44 @@ import { useNavigate } from "react-router-dom";
 import useToken from "../hooks/useToken";
 import "./Login.css";
 
-const loginUser = async ({
+// const loginUser = async ({
+// 	email,
+// 	password,
+// }: { email: string; password: string }) => {
+// 	// TODO: Refactor
+// 	if (email && password) {
+// 		const res = await axios.post(
+// 			"http://localhost:3000/login",
+// 			JSON.stringify({
+// 				email,
+// 				password,
+// 			}),
+// 			{
+// 				headers: { "Content-Type": "application/json" },
+// 			},
+// 		);
+
+// 		console.log("res", res);
+// 		return res;
+// 	}
+// 	return null;
+// };
+
+interface ILogin {
+	email: string;
+	password: string;
+	setEmail: (email: string) => void;
+	setPassword: (password: string) => void;
+	setToken: (token: string) => void;
+}
+
+const Login = ({
 	email,
+	setEmail,
 	password,
-}: { email: string; password: string }) => {
-	// TODO: Refactor
-	if (email && password) {
-		const res = await axios.post(
-			"http://localhost:3000/login",
-			JSON.stringify({
-				email,
-				password,
-			}),
-			{
-				headers: { "Content-Type": "application/json" },
-			},
-		);
-
-		console.log("res", res);
-		return res;
-	}
-	return null;
-};
-
-const Login = ({ setToken }) => {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	setPassword,
+	setToken,
+}: ILogin) => {
 	const navigate = useNavigate();
 	const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) =>
 		setEmail(event.target.value);
@@ -72,9 +84,7 @@ const Login = ({ setToken }) => {
 					<input type="password" onChange={handlePassword} />
 				</label>
 				<div>
-					<button type="submit" onClick={loginUser}>
-						Submit
-					</button>
+					<button type="submit">Submit</button>
 				</div>
 				{/* <div>
 					<input type="submit" value="Subscribe!" />

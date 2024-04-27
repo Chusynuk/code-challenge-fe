@@ -10,7 +10,7 @@ import "./App.css";
 import AuthVerify from "./common/auth-verify";
 import { useToken } from "./hooks";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Dashboard, Login, Preferences } from "./components";
 
 interface IProtectedRoutes {
@@ -42,6 +42,8 @@ function App() {
 function MainComponent() {
 	const navigate = useNavigate();
 	const { token, setToken } = useToken();
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 
 	const handleLogout = () => {
 		console.log("dentro");
@@ -54,7 +56,18 @@ function MainComponent() {
 		<div className="wrapper">
 			{/* <BrowserRouter> */}
 			<Routes>
-				<Route path="*" element={<Login setToken={setToken} />} />
+				<Route
+					path="*"
+					element={
+						<Login
+							email={email}
+							password={password}
+							setEmail={setEmail}
+							setPassword={setPassword}
+							setToken={setToken}
+						/>
+					}
+				/>
 				<Route
 					path="dashboard"
 					element={
