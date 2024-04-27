@@ -39,12 +39,18 @@ const Login = ({ setToken }) => {
 		e.preventDefault();
 
 		try {
-			const data = await loginUser({
-				email,
-				password,
-			});
+			const res = await axios.post(
+				"http://localhost:3000/login",
+				JSON.stringify({
+					email,
+					password,
+				}),
+				{
+					headers: { "Content-Type": "application/json" },
+				},
+			);
 
-			setToken(data.data.token);
+			setToken(res.data.token);
 		} catch (error) {
 			console.error(error);
 		}

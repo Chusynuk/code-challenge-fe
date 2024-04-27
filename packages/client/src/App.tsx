@@ -1,8 +1,5 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import {
 	BrowserRouter,
-	Link,
 	Navigate,
 	Outlet,
 	Route,
@@ -11,9 +8,19 @@ import {
 import "./App.css";
 import useToken from "./hooks/useToken";
 
-import { Dashboard, Login, Preferences } from "./components";
+import { Dashboard, Login } from "./components";
 
-const ProtectedRoute = ({ token, redirectPath = "/login", children }) => {
+interface IProtectedRoutes {
+	token: string;
+	redirectPath?: string;
+	children: React.ReactElement;
+}
+
+const ProtectedRoute = ({
+	token,
+	redirectPath = "/login",
+	children,
+}: IProtectedRoutes) => {
 	if (!token) {
 		return <Navigate to={redirectPath} replace />;
 	}
@@ -37,7 +44,6 @@ function App() {
 							</ProtectedRoute>
 						}
 					/>
-					{/* <Route path="/preferences" element={<Preferences />} /> */}
 				</Routes>
 			</BrowserRouter>
 		</div>
