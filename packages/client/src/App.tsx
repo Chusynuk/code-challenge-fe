@@ -4,6 +4,7 @@ import {
 	Outlet,
 	Route,
 	Routes,
+	useNavigate,
 } from "react-router-dom";
 import "./App.css";
 import { useToken } from "./hooks";
@@ -31,6 +32,18 @@ const ProtectedRoute = ({
 function App() {
 	const { token, setToken } = useToken();
 
+	const handleLogout = () => {
+		setToken("");
+
+		const navigate = useNavigate();
+
+		useEffect(() => {
+			if (!token) {
+				navigate("/");
+			}
+		}, [token, setToken]);
+	};
+
 	return (
 		<div className="wrapper">
 			<BrowserRouter>
@@ -40,7 +53,7 @@ function App() {
 						path="dashboard"
 						element={
 							<ProtectedRoute token={token}>
-								<Dashboard />
+								<Dashboard handleLogout={handleLogout} />
 							</ProtectedRoute>
 						}
 					/>
