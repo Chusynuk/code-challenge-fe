@@ -7,6 +7,7 @@ import {
 	useNavigate,
 } from "react-router-dom";
 import "./App.css";
+import AuthVerify from "./common/auth-verify";
 import { useToken } from "./hooks";
 
 import { Dashboard, Login } from "./components";
@@ -41,7 +42,7 @@ function App() {
 			if (!token) {
 				navigate("/");
 			}
-		}, [token, setToken]);
+		}, [token]);
 	};
 
 	return (
@@ -58,6 +59,7 @@ function App() {
 						}
 					/>
 				</Routes>
+				<AuthVerify handleLogout={handleLogout} />
 			</BrowserRouter>
 		</div>
 	);
