@@ -15,6 +15,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import useToken from "../hooks/useToken";
+import { FormatDate } from "../utils/formatDate";
 
 const data = [
 	{
@@ -218,16 +219,13 @@ const Dashboard = () => {
 			{
 				accessorKey: "transactionTime",
 				header: () => "Date",
-				cell: (info) => info.getValue(),
+				cell: (info) => FormatDate(info.getValue()),
 			},
 			{
-				accessorKey: "amount",
+				// accessorKey: "amount",
+				id: "amount",
+				accessorFn: (row) => `${row.amount} ${row.currency}`,
 				header: () => <span>amount</span>,
-				cell: (info) => info.getValue(),
-			},
-			{
-				accessorKey: "currency",
-				header: () => <span>currency</span>,
 				cell: (info) => info.getValue(),
 			},
 		],
