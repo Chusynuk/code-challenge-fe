@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import useToken from "../hooks/useToken";
@@ -23,7 +23,7 @@ const Dashboard = () => {
 						"Content-Type": "application/json",
 					},
 				});
-				console.log("res", res);
+				sessionStorage.setItem("sme-name", res.data.legalName);
 				return res;
 			} catch (error) {
 				console.log(error);

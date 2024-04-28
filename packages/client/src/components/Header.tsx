@@ -13,6 +13,7 @@ interface IHeader {
 
 const Header = ({ handleLogout }: IHeader) => {
 	const userEmail = sessionStorage.getItem("email");
+	const smeName = sessionStorage.getItem("sme-name");
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -27,8 +28,11 @@ const Header = ({ handleLogout }: IHeader) => {
 					>
 						{/* <MenuIcon /> */}
 					</IconButton>
-					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+					<Typography component="div" sx={{ flexGrow: 1 }}>
 						{userEmail}
+					</Typography>
+					<Typography component="div" sx={{ flexGrow: 1 }}>
+						{smeName}
 					</Typography>
 					<Button color="inherit" onClick={handleLogout}>
 						Logout
