@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { withRouter } from "./with-router";
 
-const parseJwt = (token) => {
+const parseJwt = (token: string) => {
 	try {
 		return JSON.parse(atob(token.split(".")[1]));
 	} catch (e) {
@@ -13,7 +13,7 @@ const AuthVerify = (props) => {
 	const location = props.router.location;
 
 	useEffect(() => {
-		const token = JSON.parse(sessionStorage.getItem("token"));
+		const token = JSON.parse(sessionStorage.getItem("token") as string);
 
 		if (token) {
 			const decodedJwt = parseJwt(token);
