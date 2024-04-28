@@ -36,7 +36,7 @@ interface ILogin {
 	setToken: (token: string) => void;
 }
 
-const Login = ({
+const LoginForm = ({
 	email,
 	setEmail,
 	password,
@@ -94,4 +94,4 @@ const Login = ({
 	);
 };
 
-export default Login;
+export default LoginForm;

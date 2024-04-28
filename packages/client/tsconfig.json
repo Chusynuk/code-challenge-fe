@@ -15,8 +15,10 @@
 		"isolatedModules": true,
 		"noEmit": true,
 		"jsx": "react-jsx",
+		"baseUrl": "./src",
 		"paths": {
-			"components/*": ["./src/components/index.tsx"]
+			"components/*": ["./components/*"],
+			"hooks/*": ["./hooks/*"]
 		}
 	},
 	"include": ["src"],
