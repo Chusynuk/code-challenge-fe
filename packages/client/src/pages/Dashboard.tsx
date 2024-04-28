@@ -26,6 +26,14 @@ interface ITransactionsData {
 	amount: string;
 	currency: string;
 }
+
+enum TransactionState {
+	PENDING = "PENDING",
+	REJECTED = "REJECTED",
+	COMPLETED = "COMPLETED",
+	REVERSED = "REVERSED",
+}
+
 const DebouncedInput = ({
 	value: initialValue,
 	onChange,
@@ -58,9 +66,16 @@ const DebouncedInput = ({
 const Filter = ({ column }: { column: Column<any, unknown> }) => {
 	const columnFilterValue = column.getFilterValue();
 
+	const handleOnFilter = (value) => {
+		// console.log("value", value);
+		// if (value !== "reversed") {
+		// 	column.setFilterValue(value);
+		// }
+		column.setFilterValue(value);
+	};
 	return (
 		<DebouncedInput
-			onChange={(value) => column.setFilterValue(value)}
+			onChange={handleOnFilter}
 			placeholder={"Search status..."}
 			type="text"
 			value={(columnFilterValue ?? "") as string}
@@ -83,6 +98,7 @@ const Dashboard = () => {
 				accessorKey: "merchantName",
 				header: "Name",
 				cell: (info) => info.getValue(),
+				size: 150,
 			},
 			{
 				accessorKey: "merchantIconUrl",
@@ -90,23 +106,27 @@ const Dashboard = () => {
 				cell: (info) => (
 					<img alt="icon" width="20px" height="20px" src={info.getValue()} />
 				),
+				size: 150,
 			},
 			{
 				accessorKey: "status",
 				header: "status",
 				cell: (info) => info.getValue(),
+				size: 150,
 			},
 
 			{
 				accessorKey: "transactionTime",
 				header: "Date",
 				cell: (info) => FormatDate(info.getValue()),
+				size: 150,
 			},
 			{
 				id: "amount",
 				accessorFn: (row) => `${row.amount} ${row.currency}`,
 				header: "amount",
 				cell: (info) => info.getValue(),
+				size: 150,
 			},
 		],
 		[],
@@ -174,13 +194,25 @@ const Dashboard = () => {
 			{loading ? (
 				<CircularProgress />
 			) : (
-				<table>
+				<table
+					style={{
+						width: "100%",
+						border: "2px solid black",
+						borderRadius: "5px",
+						backgroundColor: "#d3d3d3",
+						// boxShadow: "10px -4px 5px 0px rgba(0,0,0,0.75)",
+					}}
+				>
 					<thead>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<tr key={headerGroup.id}>
 								{headerGroup.headers.map((header) => {
 									return (
-										<th key={header.id} colSpan={header.colSpan}>
+										<th
+											key={header.id}
+											colSpan={header.colSpan}
+											style={{ width: "120px" }}
+										>
 											{header.isPlaceholder ? null : (
 												<>
 													{header.column.id === "status" &&
@@ -208,14 +240,16 @@ const Dashboard = () => {
 							return (
 								<tr key={row.id}>
 									{row.getVisibleCells().map((cell) => {
+										// if (cell.getContext().row.original.status === "REVERSED") {
 										return (
-											<td key={cell.id}>
+											<td key={cell.id} style={{ textAlign: "center" }}>
 												{flexRender(
 													cell.column.columnDef.cell,
 													cell.getContext(),
 												)}
 											</td>
 										);
+										// }
 									})}
 								</tr>
 							);

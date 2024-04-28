@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import useToken from "../hooks/useToken";
 import { withRouter } from "./with-router";
 
 const parseJwt = (token: string) => {
@@ -11,6 +13,8 @@ const parseJwt = (token: string) => {
 
 const AuthVerify = (props) => {
 	const location = props.router.location;
+	// const { setToken } = useToken();
+	// const navigate = useNavigate();
 
 	useEffect(() => {
 		const token = JSON.parse(sessionStorage.getItem("token") as string);
@@ -20,11 +24,13 @@ const AuthVerify = (props) => {
 
 			if (decodedJwt.exp * 1000 < Date.now()) {
 				props.handleLogout();
+				// setToken("");
+				// navigate("/login");
 			}
 		}
 	}, [location]);
 
-	return <div></div>;
+	return null;
 };
 
 export default withRouter(AuthVerify);
