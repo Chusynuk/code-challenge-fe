@@ -13,6 +13,7 @@ interface IHeader {
 
 const Header = ({ handleLogout }: IHeader) => {
 	const userEmail = sessionStorage.getItem("email");
+
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="static">
