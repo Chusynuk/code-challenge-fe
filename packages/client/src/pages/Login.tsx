@@ -33,7 +33,9 @@ const Login = () => {
 			);
 
 			setToken(res.data.token);
+
 			navigate("/dashboard");
+			sessionStorage.setItem("email", email);
 		} catch (error) {
 			if (error instanceof Error) {
 				console.error(error.response.data.message);

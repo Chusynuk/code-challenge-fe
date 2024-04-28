@@ -12,6 +12,7 @@ interface IHeader {
 }
 
 const Header = ({ handleLogout }: IHeader) => {
+	const userEmail = sessionStorage.getItem("email");
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="static">
@@ -26,7 +27,7 @@ const Header = ({ handleLogout }: IHeader) => {
 						{/* <MenuIcon /> */}
 					</IconButton>
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-						News
+						{userEmail}
 					</Typography>
 					<Button color="inherit" onClick={handleLogout}>
 						Logout

@@ -50,7 +50,7 @@ function MainComponent() {
 	};
 
 	return (
-		<div>
+		<div className="wrapper">
 			{/* <BrowserRouter> */}
 			<Routes>
 				<Route path="*" element={<Login />} />

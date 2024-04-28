@@ -11,27 +11,24 @@ interface ILayout {
 
 const Layout = ({ handleLogout, children }: ILayout) => {
 	const location = useLocation();
-	console.log("location", location);
 	const isDashboardPage = location.pathname.includes("dashboard");
+
 	return (
 		<>
-			<Grid
-				container
-				flexDirection="column"
-				// justifyContent="space-between"
-				// spacing={1}
-			>
+			<Grid container flexDirection="column">
 				{isDashboardPage && <Header handleLogout={handleLogout} />}
 				<CssBaseline />
-				<Box
-					display="flex"
-					flexDirection="column"
-					alignItems="center"
-					component="section"
-					sx={{ p: 2, border: "1px solid grey" }}
-				>
-					{children}
-				</Box>
+				<Grid item xs={12}>
+					<Box
+						display="flex"
+						flexDirection="column"
+						alignItems="center"
+						component="section"
+						sx={{ p: 2, border: "1px solid grey" }}
+					>
+						{children}
+					</Box>
+				</Grid>
 			</Grid>
 		</>
 	);

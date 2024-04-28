@@ -7,8 +7,9 @@ const Dashboard = () => {
 	const { token, setToken } = useToken();
 
 	const handleLogout = () => {
-		setToken("");
 		navigate("/login");
+		sessionStorage.removeItem("token");
+		sessionStorage.removeItem("email");
 	};
 	return (
 		<Layout handleLogout={handleLogout}>
