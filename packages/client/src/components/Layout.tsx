@@ -6,13 +6,13 @@ import { Header } from "./";
 
 interface ILayout {
 	children: React.ReactNode;
-	handleLogout: () => void;
+	handleLogout?: () => void;
 }
 
 const Layout = ({ handleLogout, children }: ILayout) => {
 	const location = useLocation();
 	console.log("location", location);
-	const isLoginPage = location.pathname.includes("login");
+	const isDashboardPage = location.pathname.includes("dashboard");
 	return (
 		<>
 			<Grid
@@ -21,7 +21,7 @@ const Layout = ({ handleLogout, children }: ILayout) => {
 				// justifyContent="space-between"
 				// spacing={1}
 			>
-				{!isLoginPage && <Header handleLogout={handleLogout} />}
+				{isDashboardPage && <Header handleLogout={handleLogout} />}
 				<CssBaseline />
 				<Box
 					display="flex"
