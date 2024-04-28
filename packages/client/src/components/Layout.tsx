@@ -18,7 +18,7 @@ const Layout = ({ handleLogout, children }: ILayout) => {
 			<Grid container flexDirection="column">
 				{isDashboardPage && <Header handleLogout={handleLogout} />}
 				<CssBaseline />
-				<Grid item xs={12}>
+				<Grid>
 					<Box
 						display="flex"
 						flexDirection="column"

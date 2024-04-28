@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 
 interface IHeader {
-	handleLogout: () => void;
+	handleLogout?: () => void;
 }
 
 const Header = ({ handleLogout }: IHeader) => {

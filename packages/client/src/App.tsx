@@ -1,7 +1,6 @@
 import {
 	BrowserRouter,
 	Navigate,
-	Outlet,
 	Route,
 	Routes,
 	useNavigate,
@@ -10,8 +9,6 @@ import "./App.css";
 import AuthVerify from "./common/auth-verify";
 import { useToken } from "./hooks";
 
-import { useEffect, useState } from "react";
-import { Preferences } from "./components";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 
@@ -50,30 +47,20 @@ function MainComponent() {
 	};
 
 	return (
-		<div className="wrapper">
-			{/* <BrowserRouter> */}
+		<>
 			<Routes>
 				<Route path="*" element={<Login />} />
 				<Route
 					path="/dashboard"
 					element={
 						<ProtectedRoute token={token}>
-							<Dashboard handleLogout={handleLogout} />
+							<Dashboard />
 						</ProtectedRoute>
 					}
 				/>
-				{/* <Route
-					path="preferences"
-					element={
-						<ProtectedRoute token={token}>
-							<Preferences />
-						</ProtectedRoute>
-					}
-				/> */}
 			</Routes>
 			<AuthVerify handleLogout={handleLogout} />
-			{/* </BrowserRouter> */}
-		</div>
+		</>
 	);
 }
 
