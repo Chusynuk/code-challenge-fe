@@ -1,27 +1,38 @@
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
+import { Box, Grid } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 import type * as React from "react";
+import { useLocation } from "react-router-dom";
+import { Header } from "./";
 
 interface ILayout {
 	children: React.ReactNode;
+	handleLogout: () => void;
 }
 
-const Layout = ({ children }: ILayout) => {
+const Layout = ({ handleLogout, children }: ILayout) => {
+	const location = useLocation();
+	console.log("location", location);
+	const isLoginPage = location.pathname.includes("login");
 	return (
 		<>
-			<Container maxWidth="lg">
+			<Grid
+				container
+				flexDirection="column"
+				// justifyContent="space-between"
+				// spacing={1}
+			>
+				{!isLoginPage && <Header handleLogout={handleLogout} />}
 				<CssBaseline />
 				<Box
 					display="flex"
 					flexDirection="column"
 					alignItems="center"
 					component="section"
-					sx={{ p: 2, border: "1px dashed grey" }}
+					sx={{ p: 2, border: "1px solid grey" }}
 				>
 					{children}
 				</Box>
-			</Container>
+			</Grid>
 		</>
 	);
 };

@@ -2,3 +2,4 @@ export { default as Dashboard } from "./Dashboard";
 export { default as Preferences } from "./Preferences";
 export { default as LoginForm } from "./LoginForm";
 export { default as Layout } from "./Layout";
+export { default as Header } from "./Header";

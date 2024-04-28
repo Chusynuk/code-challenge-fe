@@ -11,7 +11,7 @@ const Dashboard = () => {
 		navigate("/login");
 	};
 	return (
-		<Layout>
+		<Layout handleLogout={handleLogout}>
 			<h2>Dashboard</h2>
 			<button type="button" onClick={handleLogout}>
 				logout
