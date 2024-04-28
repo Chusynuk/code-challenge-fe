@@ -197,7 +197,24 @@ const Dashboard = () => {
 	const navigate = useNavigate();
 	const { token, setToken } = useToken();
 	const [smeId, setSmeId] = useState("");
+	const [transactionsData, settransactionsData] = useState([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	console.log("transactionsData", transactionsData);
+
+	// useEffect(() => {
+	// 	const myData = transactionsData?.map((e) => {
+	// 	return {
+	// 		merchantName: e.merchantName,
+	// 		merchantIconUrl: e.merchantIconUrl,
+	// 		status: e.status,
+	// 		transactionTime: e.transactionTime,
+	// 		amount: e.amount,
+	// 		currency: e.currency,
+	// 	};
+	// });
+	// }, [])
+
+	// console.log("myData", myData);
 	const columns = useMemo<ColumnDef<Person, any>[]>(
 		() => [
 			{
@@ -207,32 +224,33 @@ const Dashboard = () => {
 			},
 			{
 				accessorKey: "merchantIconUrl",
-				header: () => <span>merchantIconUrl</span>,
-				cell: (info) => info.getValue(),
+				header: "merchantIconUrl",
+				cell: (info) => (
+					<img alt="icon" width="20px" height="20px" src={info.getValue()} />
+				),
 			},
 			{
 				accessorKey: "status",
-				header: () => <span>status</span>,
+				header: "status",
 				cell: (info) => info.getValue(),
 			},
 
 			{
 				accessorKey: "transactionTime",
-				header: () => "Date",
+				header: "Date",
 				cell: (info) => FormatDate(info.getValue()),
 			},
 			{
-				// accessorKey: "amount",
 				id: "amount",
 				accessorFn: (row) => `${row.amount} ${row.currency}`,
-				header: () => <span>amount</span>,
+				header: "amount",
 				cell: (info) => info.getValue(),
 			},
 		],
 		[],
 	);
 	const table = useReactTable({
-		data,
+		data: transactionsData,
 		columns,
 		filterFns: {},
 		state: {
@@ -263,7 +281,7 @@ const Dashboard = () => {
 					},
 				});
 				sessionStorage.setItem("sme-name", res.data.legalName);
-				console.log("res", res);
+
 				setSmeId(res.data.id);
 				return res;
 			} catch (error) {
@@ -277,7 +295,7 @@ const Dashboard = () => {
 		const fetchTransactionsFromSme = async () => {
 			try {
 				const res = await axios.get(
-					`http://localhost:3000/transactions?userId=${smeId}&status=PENDING`,
+					`http://localhost:3000/transactions?userId=${smeId}`,
 					{
 						headers: {
 							Authorization: `Bearer ${token}`,
@@ -285,8 +303,8 @@ const Dashboard = () => {
 						},
 					},
 				);
-
-				console.log("res", res);
+				settransactionsData(res.data.data);
+				console.log("res", res.data.data);
 				return res;
 			} catch (error) {
 				console.log(error);
@@ -302,7 +320,6 @@ const Dashboard = () => {
 					{table.getHeaderGroups().map((headerGroup) => (
 						<tr key={headerGroup.id}>
 							{headerGroup.headers.map((header) => {
-								console.log(header);
 								return (
 									<th key={header.id} colSpan={header.colSpan}>
 										{header.isPlaceholder ? null : (
