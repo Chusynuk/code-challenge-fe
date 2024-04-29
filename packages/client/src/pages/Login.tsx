@@ -18,6 +18,7 @@ const Login = () => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		e.stopPropagation();
 
 		try {
 			const res = await axios.post(
@@ -76,6 +77,7 @@ const Login = () => {
 					helperText={loginErrorMsg}
 					onChange={handleEmail}
 					onFocus={() => setLoginErrorMsg("")}
+					autoComplete="off"
 				/>
 				<TextField
 					type="password"
@@ -84,6 +86,7 @@ const Login = () => {
 					helperText={loginErrorMsg}
 					onChange={handlePassword}
 					onFocus={() => setLoginErrorMsg("")}
+					autoComplete="off"
 				/>
 				<Button variant="contained" type="submit">
 					Log in
