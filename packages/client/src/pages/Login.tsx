@@ -1,24 +1,26 @@
-import { Box, Button, TextField, Typography } from '@mui/material'
-import axios from 'axios'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Layout } from '../components'
-import useToken from '../hooks/useToken'
+import { Box, Button, TextField, Typography } from '@mui/material';
+import axios from 'axios';
+import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Layout } from '../components';
+import ErrorContext from '../context/context';
+import useToken from '../hooks/useToken';
 
 const Login = () => {
-    const navigate = useNavigate()
-    const { setToken } = useToken()
-    const [email, setEmail] = useState('')
-    const [loginErrorMsg, setLoginErrorMsg] = useState('')
-    const [password, setPassword] = useState('')
+    const navigate = useNavigate();
+    const { setToken } = useToken();
+    const [email, setEmail] = useState('');
+    const [loginErrorMsg, setLoginErrorMsg] = useState('');
+    const [password, setPassword] = useState('');
+    const { isFetchError, setIsFetchError } = useContext(ErrorContext);
     const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) =>
-        setEmail(event.target.value)
+        setEmail(event.target.value);
     const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) =>
-        setPassword(event.target.value)
-
+        setPassword(event.target.value);
+    console.log('isFetchError', isFetchError);
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        e.stopPropagation()
+        e.preventDefault();
+        e.stopPropagation();
 
         try {
             const res = await axios.post(
@@ -30,20 +32,21 @@ const Login = () => {
                 {
                     headers: { 'Content-Type': 'application/json' },
                 }
-            )
+            );
 
-            setToken(res.data.token)
+            setToken(res.data.token);
 
-            sessionStorage.setItem('email', email)
+            sessionStorage.setItem('email', email);
 
-            navigate('/dashboard')
+            navigate('/dashboard');
         } catch (error) {
+            setIsFetchError(error);
             if (error instanceof Error) {
-                console.error(error.response.data.message)
-                setLoginErrorMsg(error.response.data.message)
+                console.error(error.response.data.message);
+                setLoginErrorMsg(error.response.data.message);
             }
         }
-    }
+    };
 
     return (
         <Layout>
@@ -93,7 +96,7 @@ const Login = () => {
                 </Button>
             </form>
         </Layout>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;

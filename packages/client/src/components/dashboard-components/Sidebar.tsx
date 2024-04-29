@@ -5,7 +5,7 @@ import {
     ListItem,
     ListItemButton,
     ListItemIcon,
-} from '@mui/material'
+} from '@mui/material';
 
 const Sidebar = (
     <Box sx={{ width: 250 }} role="presentation">
@@ -31,6 +31,6 @@ const Sidebar = (
             ))}
         </List>
     </Box>
-)
+);
 
-export { Sidebar }
+export { Sidebar };

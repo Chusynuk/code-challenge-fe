@@ -4,30 +4,33 @@ import {
     Route,
     Routes,
     useNavigate,
-} from 'react-router-dom'
-import './App.css'
-import AuthVerify from './common/auth-verify'
-import { ProtectedRoute } from './common/protected-route'
-import { useToken } from './hooks'
+} from 'react-router-dom';
+import './App.css';
+import AuthVerify from './common/auth-verify';
+import { ProtectedRoute } from './common/protected-route';
+import { ErrorProvider } from './context/ErrorProvider';
+import { useToken } from './hooks';
 
-import Dashboard from './pages/Dashboard'
-import Login from './pages/Login'
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
 
 function App() {
     return (
         <BrowserRouter>
-            <MainComponent />
+            <ErrorProvider>
+                <MainComponent />
+            </ErrorProvider>
         </BrowserRouter>
-    )
+    );
 }
 
 function MainComponent() {
-    const { setToken } = useToken()
-    const navigate = useNavigate()
+    const { setToken } = useToken();
+    const navigate = useNavigate();
     const handleLogout = () => {
-        setToken('')
-        navigate('/login')
-    }
+        setToken('');
+        navigate('/login');
+    };
 
     return (
         <>
@@ -45,7 +48,7 @@ function MainComponent() {
             </Routes>
             <AuthVerify handleLogout={handleLogout} />
         </>
-    )
+    );
 }
 
-export default App
+export default App;

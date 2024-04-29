@@ -1,5 +1,5 @@
-import { Box, Drawer, Typography } from '@mui/material'
-import CircularProgress from '@mui/material/CircularProgress'
+import { Box, Drawer, Typography } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import {
     type ColumnDef,
     type ColumnFiltersState,
@@ -7,22 +7,23 @@ import {
     getCoreRowModel,
     getFilteredRowModel,
     useReactTable,
-} from '@tanstack/react-table'
-import axios from 'axios'
-import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Layout from '../components/Layout'
-import { Filter } from '../components/dashboard-components'
-import useToken from '../hooks/useToken'
-import { FormatDate } from '../utils/formatDate'
+} from '@tanstack/react-table';
+import axios from 'axios';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Layout from '../components/Layout';
+import { Filter } from '../components/dashboard-components';
+import ErrorContext from '../context/context';
+import useToken from '../hooks/useToken';
+import { FormatDate } from '../utils/formatDate';
 
 interface ITransactionsData {
-    merchantName: string
-    merchantIconUrl: string
-    status: string
-    transactionTime: string
-    amount: string
-    currency: string
+    merchantName: string;
+    merchantIconUrl: string;
+    status: string;
+    transactionTime: string;
+    amount: string;
+    currency: string;
 }
 
 enum TransactionState {
@@ -33,18 +34,18 @@ enum TransactionState {
 }
 
 const Dashboard = () => {
-    const navigate = useNavigate()
-    const { token, setToken } = useToken()
-    const [smeId, setSmeId] = useState('')
-    const [transactionsData, settransactionsData] = useState([])
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-    const [hoveredCell, setHoveredCell] = useState(false)
-
-    const [loading, setLoading] = useState(true)
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+    const navigate = useNavigate();
+    const { token, setToken } = useToken();
+    const [smeId, setSmeId] = useState('');
+    const [transactionsData, setTransactionsData] = useState([]);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [hoveredCell, setHoveredCell] = useState(false);
+    const { isFetchError, setIsFetchError } = useContext(ErrorContext);
+    const [loading, setLoading] = useState(true);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const toggleDrawer = (newOpen: boolean) => () => {
-        setIsDrawerOpen(newOpen)
-    }
+        setIsDrawerOpen(newOpen);
+    };
 
     const columns = useMemo<ColumnDef<ITransactionsData, any>[]>(
         () => [
@@ -89,7 +90,7 @@ const Dashboard = () => {
             },
         ],
         []
-    )
+    );
     const table = useReactTable({
         data: transactionsData,
         columns,
@@ -100,13 +101,13 @@ const Dashboard = () => {
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
-    })
+    });
     const handleLogout = () => {
-        navigate('/login')
-        sessionStorage.removeItem('token')
-        sessionStorage.removeItem('email')
-        sessionStorage.removeItem('sme-name')
-    }
+        navigate('/login');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('email');
+        sessionStorage.removeItem('sme-name');
+    };
 
     useEffect(() => {
         const fetchSme = async () => {
@@ -116,16 +117,16 @@ const Dashboard = () => {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     },
-                })
-                sessionStorage.setItem('sme-name', res.data.legalName)
+                });
+                sessionStorage.setItem('sme-name', res.data.legalName);
 
-                setSmeId(res.data.id)
+                setSmeId(res.data.id);
             } catch (error) {
-                console.log(error)
+                console.log(error);
             }
-        }
-        fetchSme()
-    }, [])
+        };
+        fetchSme();
+    }, []);
 
     useEffect(() => {
         const fetchTransactionsFromSme = async () => {
@@ -138,16 +139,19 @@ const Dashboard = () => {
                             'Content-Type': 'application/json',
                         },
                     }
-                )
-                settransactionsData(res.data.data)
+                );
+                setTransactionsData(res.data.data);
 
-                setLoading(false)
+                setLoading(false);
             } catch (error) {
-                console.log(error)
+                setIsFetchError(Boolean(error.response.data.message));
+                setLoading(false);
             }
-        }
-        fetchTransactionsFromSme()
-    }, [])
+        };
+        fetchTransactionsFromSme();
+    }, []);
+
+    console.log('isFetchError', isFetchError);
     return (
         <Layout handleLogout={handleLogout}>
             <Box display="flex" width="100%">
@@ -202,7 +206,7 @@ const Dashboard = () => {
                                                 </>
                                             )}
                                         </th>
-                                    )
+                                    );
                                 })}
                             </tr>
                         ))}
@@ -230,16 +234,16 @@ const Dashboard = () => {
                                                     )}
                                                 </Typography>
                                             </td>
-                                        )
+                                        );
                                     })}
                                 </tr>
-                            )
+                            );
                         })}
                     </tbody>
                 </table>
             )}
         </Layout>
-    )
-}
+    );
+};
 
-export default Dashboard
+export default Dashboard;
