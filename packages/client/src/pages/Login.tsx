@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material";
+import { Box, Button, CardContent, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -49,8 +49,27 @@ const Login = () => {
 		<Layout>
 			<form
 				onSubmit={handleSubmit}
-				style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					gap: "20px",
+					padding: "16px",
+					border: "1px solid black",
+				}}
 			>
+				<Box
+					display="flex"
+					flexDirection="column"
+					justifyContent="center"
+					textAlign="center"
+					borderRadius="5px"
+					border="1px solid black"
+					width="230px"
+					height="40px"
+					style={{ backgroundColor: "beige" }} // Box component does not provide backgroundColor prop
+				>
+					<Typography>FinMid Login</Typography>
+				</Box>
 				<TextField
 					type="email"
 					error={Boolean(loginErrorMsg)}
@@ -69,7 +88,9 @@ const Login = () => {
 					onChange={handlePassword}
 					onFocus={() => setLoginErrorMsg("")}
 				/>
-				<Button type="submit">Log in</Button>
+				<Button variant="contained" type="submit">
+					Log in
+				</Button>
 			</form>
 		</Layout>
 	);

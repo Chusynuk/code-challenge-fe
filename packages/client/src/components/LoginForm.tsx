@@ -75,20 +75,13 @@ const LoginForm = ({
 		<div className="login-wrapper">
 			<h1>Please Log In</h1>
 			<form onSubmit={handleSubmit}>
-				<label>
-					<p>Username</p>
-					<input type="email" onChange={handleEmail} />
-				</label>
-				<label>
-					<p>Password</p>
-					<input type="password" onChange={handlePassword} />
-				</label>
+				<label htmlFor="email" />
+				<input type="email" id="email" onChange={handleEmail} />
+				<label htmlFor="password" />
+				<input type="password" id="password" onChange={handlePassword} />
 				<div>
 					<button type="submit">Submit</button>
 				</div>
-				{/* <div>
-					<input type="submit" value="Subscribe!" />
-				</div> */}
 			</form>
 		</div>
 	);

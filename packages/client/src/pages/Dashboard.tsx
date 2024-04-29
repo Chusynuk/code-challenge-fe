@@ -1,3 +1,13 @@
+import {
+	Box,
+	Divider,
+	Drawer,
+	List,
+	ListItem,
+	ListItemButton,
+	ListItemIcon,
+	ListItemText,
+} from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
 	type Column,
@@ -83,14 +93,44 @@ const Filter = ({ column }: { column: Column<any, unknown> }) => {
 	);
 };
 
+const DrawerList = (
+	<Box sx={{ width: 250 }} role="presentation">
+		<List>
+			{["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+				<ListItem key={text} disablePadding>
+					<ListItemButton>
+						<ListItemIcon></ListItemIcon>
+						<ListItemText primary={text} />
+					</ListItemButton>
+				</ListItem>
+			))}
+		</List>
+		<Divider />
+		<List>
+			{["All mail", "Trash", "Spam"].map((text, index) => (
+				<ListItem key={text} disablePadding>
+					<ListItemButton>
+						<ListItemIcon></ListItemIcon>
+						<ListItemText primary={text} />
+					</ListItemButton>
+				</ListItem>
+			))}
+		</List>
+	</Box>
+);
+
 const Dashboard = () => {
 	const navigate = useNavigate();
 	const { token, setToken } = useToken();
 	const [smeId, setSmeId] = useState("");
 	const [transactionsData, settransactionsData] = useState([]);
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
 	const [loading, setLoading] = useState(true);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const toggleDrawer = (newOpen: boolean) => () => {
+		setIsDrawerOpen(newOpen);
+	};
 
 	const columns = useMemo<ColumnDef<ITransactionsData, any>[]>(
 		() => [
@@ -146,6 +186,7 @@ const Dashboard = () => {
 		navigate("/login");
 		sessionStorage.removeItem("token");
 		sessionStorage.removeItem("email");
+		sessionStorage.removeItem("sme-name");
 	};
 
 	useEffect(() => {
@@ -191,6 +232,12 @@ const Dashboard = () => {
 	return (
 		<Layout handleLogout={handleLogout}>
 			<h2>Dashboard</h2>
+			<button type="button" onClick={() => setIsDrawerOpen(true)}>
+				toggle drawer
+			</button>
+			<Drawer open={isDrawerOpen} onClose={toggleDrawer(false)}>
+				{DrawerList}
+			</Drawer>
 			{loading ? (
 				<CircularProgress />
 			) : (
