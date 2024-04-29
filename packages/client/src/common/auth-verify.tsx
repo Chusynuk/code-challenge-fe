@@ -1,31 +1,31 @@
-import { useEffect } from 'react'
+import { useEffect } from 'react';
 
-import { withRouter } from './with-router'
+import { withRouter } from './with-router';
 
 const parseJwt = (token: string) => {
     try {
-        return JSON.parse(atob(token.split('.')[1]))
+        return JSON.parse(atob(token.split('.')[1]));
     } catch (e) {
-        return null
+        return null;
     }
-}
+};
 
 const AuthVerify = (props) => {
-    const location = props.router.location
+    const location = props.router.location;
 
     useEffect(() => {
-        const token = JSON.parse(sessionStorage.getItem('token') as string)
+        const token = JSON.parse(sessionStorage.getItem('token') as string);
 
         if (token) {
-            const decodedJwt = parseJwt(token)
+            const decodedJwt = parseJwt(token);
 
             if (decodedJwt.exp * 1000 < Date.now()) {
-                props.handleLogout()
+                props.handleLogout();
             }
         }
-    }, [location])
+    }, [location]);
 
-    return null
-}
+    return null;
+};
 
-export default withRouter(AuthVerify)
+export default withRouter(AuthVerify);
