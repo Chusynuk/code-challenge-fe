@@ -1,5 +1,5 @@
-import { Box, Drawer, Typography } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Box, CircularProgress, Drawer, Typography } from '@mui/material';
+
 import {
     type ColumnDef,
     type ColumnFiltersState,
@@ -9,6 +9,11 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import axios from 'axios';
+import {
+    type MRT_ColumnDef,
+    MaterialReactTable,
+    useMaterialReactTable,
+} from 'material-react-table';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
@@ -40,67 +45,61 @@ const Dashboard = () => {
     const [transactionsData, setTransactionsData] = useState([]);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [hoveredCell, setHoveredCell] = useState(false);
+    const [showStatusFilter, setShowStatusFilter] = useState(false);
     const { isFetchError, setIsFetchError } = useContext(ErrorContext);
+    const [headerColumn, setHeaderColumn] = useState();
     const [loading, setLoading] = useState(true);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const toggleDrawer = (newOpen: boolean) => () => {
         setIsDrawerOpen(newOpen);
     };
 
-    const columns = useMemo<ColumnDef<ITransactionsData, any>[]>(
+    const columns = useMemo<MRT_ColumnDef<ITransactionsData, any>[]>(
         () => [
             {
                 accessorKey: 'merchantName',
-                header: () => <Typography>Name</Typography>,
-                cell: (info) => info.getValue(),
-                size: 150,
+                header: 'Name',
+                enableColumnFilter: false,
+                enableFilterMatchHighlighting: false,
+                enableColumnFilterModes: false,
+                enableGlobalFilter: false,
             },
             {
                 accessorKey: 'merchantIconUrl',
-                header: () => <Typography>Merchant</Typography>,
-                cell: (info) => (
-                    <img
-                        alt="icon"
-                        width="20px"
-                        height="20px"
-                        src={info.getValue()}
-                    />
-                ),
-                size: 150,
+                header: 'Merchant',
+                enableColumnFilter: false,
+                enableFilterMatchHighlighting: false,
+                enableGlobalFilter: false,
             },
             {
                 accessorKey: 'status',
-                header: () => <Typography>Status</Typography>,
-                cell: (info) => info.getValue(),
-                size: 150,
+                header: 'Status',
+                enableColumnFilter: true,
+                enableFilterMatchHighlighting: true,
+                enableGlobalFilter: true,
             },
 
             {
                 accessorKey: 'transactionTime',
-                header: () => <Typography>Date</Typography>,
-                cell: (info) => FormatDate(info.getValue()),
-                size: 150,
+                header: 'Date',
+                enableColumnFilter: false,
+                enableFilterMatchHighlighting: false,
+                enableGlobalFilter: false,
             },
             {
                 id: 'amount',
                 accessorFn: (row) => `${row.amount} ${row.currency}`,
-                header: () => <Typography>Amount</Typography>,
-                cell: (info) => info.getValue(),
-                size: 150,
+                header: 'Amount',
+                enableColumnFilter: false,
+                enableFilterMatchHighlighting: false,
+                enableGlobalFilter: false,
             },
         ],
         []
     );
-    const table = useReactTable({
-        data: transactionsData,
+    const table = useMaterialReactTable({
         columns,
-        filterFns: {},
-        state: {
-            columnFilters,
-        },
-        onColumnFiltersChange: setColumnFilters,
-        getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
+        data: transactionsData, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
     });
     const handleLogout = () => {
         navigate('/login');
@@ -151,7 +150,14 @@ const Dashboard = () => {
         fetchTransactionsFromSme();
     }, []);
 
-    console.log('isFetchError', isFetchError);
+    const handleOnClickRow = (
+        e: React.MouseEvent<HTMLButtonElement>,
+        rowId: string
+    ) => {
+        console.log('e', e);
+        console.log('rowId', rowId);
+    };
+
     return (
         <Layout handleLogout={handleLogout}>
             <Box display="flex" width="100%">
@@ -166,81 +172,9 @@ const Dashboard = () => {
             {loading ? (
                 <CircularProgress />
             ) : (
-                <table
-                    style={{
-                        width: '100%',
-                        border: '2px solid black',
-                        borderRadius: '5px',
-                        backgroundColor: '#d3d3d3',
-                        // boxShadow: '10px -4px 5px 0px rgba(0,0,0,0.75)',
-                    }}
-                >
-                    <thead>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <tr key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <th
-                                            key={header.id}
-                                            colSpan={header.colSpan}
-                                            style={{ width: '120px' }}
-                                        >
-                                            {header.isPlaceholder ? null : (
-                                                <>
-                                                    {header.column.id ===
-                                                    'status' ? (
-                                                        <Filter
-                                                            column={
-                                                                header.column
-                                                            }
-                                                        />
-                                                    ) : null}
-                                                    <div>
-                                                        {flexRender(
-                                                            header.column
-                                                                .columnDef
-                                                                .header,
-                                                            header.getContext()
-                                                        )}
-                                                    </div>
-                                                </>
-                                            )}
-                                        </th>
-                                    );
-                                })}
-                            </tr>
-                        ))}
-                    </thead>
-                    <tbody>
-                        {table.getRowModel().rows.map((row) => {
-                            return (
-                                <tr key={row.id}>
-                                    {row.getVisibleCells().map((cell) => {
-                                        return (
-                                            <td
-                                                key={cell.id}
-                                                style={{
-                                                    textAlign: 'center',
-                                                    backgroundColor: hoveredCell
-                                                        ? 'red'
-                                                        : 'transparent',
-                                                }}
-                                            >
-                                                <Typography variant="button">
-                                                    {flexRender(
-                                                        cell.column.columnDef
-                                                            .cell,
-                                                        cell.getContext()
-                                                    )}
-                                                </Typography>
-                                            </td>
-                                        );
-                                    })}
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                <>
+                    <MaterialReactTable table={table} />;
+                </>
             )}
         </Layout>
     );

@@ -33,6 +33,7 @@ const DebouncedInput = ({
             {...props}
             value={inputValue}
             onChange={handleOnChange}
+            style={{ outline: 'none' }}
         />
     );
 };
