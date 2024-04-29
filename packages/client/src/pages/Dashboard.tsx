@@ -7,6 +7,7 @@ import {
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
+	Typography,
 } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
@@ -71,16 +72,19 @@ const DebouncedInput = ({
 	const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) =>
 		setInputValue(event.target.value);
 
-	return <input {...props} value={inputValue} onChange={handleOnChange} />;
+	return (
+		<input
+			type="text"
+			{...props}
+			value={inputValue}
+			onChange={handleOnChange}
+		/>
+	);
 };
 const Filter = ({ column }: { column: Column<any, unknown> }) => {
 	const columnFilterValue = column.getFilterValue();
 
-	const handleOnFilter = (value) => {
-		// console.log("value", value);
-		// if (value !== "reversed") {
-		// 	column.setFilterValue(value);
-		// }
+	const handleOnFilter = (value: string | number) => {
 		column.setFilterValue(value);
 	};
 	return (
@@ -136,13 +140,13 @@ const Dashboard = () => {
 		() => [
 			{
 				accessorKey: "merchantName",
-				header: "Name",
+				header: () => <Typography>Name</Typography>,
 				cell: (info) => info.getValue(),
 				size: 150,
 			},
 			{
 				accessorKey: "merchantIconUrl",
-				header: "merchantIconUrl",
+				header: () => <Typography>Merchant</Typography>,
 				cell: (info) => (
 					<img alt="icon" width="20px" height="20px" src={info.getValue()} />
 				),
@@ -150,21 +154,21 @@ const Dashboard = () => {
 			},
 			{
 				accessorKey: "status",
-				header: "status",
+				header: () => <Typography>Status</Typography>,
 				cell: (info) => info.getValue(),
 				size: 150,
 			},
 
 			{
 				accessorKey: "transactionTime",
-				header: "Date",
+				header: () => <Typography>Date</Typography>,
 				cell: (info) => FormatDate(info.getValue()),
 				size: 150,
 			},
 			{
 				id: "amount",
 				accessorFn: (row) => `${row.amount} ${row.currency}`,
-				header: "amount",
+				header: () => <Typography>Amount</Typography>,
 				cell: (info) => info.getValue(),
 				size: 150,
 			},
@@ -262,11 +266,8 @@ const Dashboard = () => {
 										>
 											{header.isPlaceholder ? null : (
 												<>
-													{header.column.id === "status" &&
-													header.column.getCanFilter() ? (
-														<div>
-															<Filter column={header.column} />
-														</div>
+													{header.column.id === "status" ? (
+														<Filter column={header.column} />
 													) : null}
 													<div>
 														{flexRender(
@@ -287,7 +288,6 @@ const Dashboard = () => {
 							return (
 								<tr key={row.id}>
 									{row.getVisibleCells().map((cell) => {
-										// if (cell.getContext().row.original.status === "REVERSED") {
 										return (
 											<td key={cell.id} style={{ textAlign: "center" }}>
 												{flexRender(
@@ -296,7 +296,6 @@ const Dashboard = () => {
 												)}
 											</td>
 										);
-										// }
 									})}
 								</tr>
 							);
