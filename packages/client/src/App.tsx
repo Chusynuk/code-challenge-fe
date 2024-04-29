@@ -43,14 +43,14 @@ function MainComponent() {
 	const navigate = useNavigate();
 	const handleLogout = () => {
 		setToken("");
-		navigate("/");
+		navigate("/login");
 	};
 
 	return (
 		<>
 			<Routes>
-				<Route path="/" element={<Login />} />
-				<Route path="*" element={<Navigate to="/" replace />} />
+				<Route path="/login" element={<Login />} />
+				<Route path="*" element={<Navigate to="/login" replace />} />
 				<Route
 					path="/dashboard"
 					element={

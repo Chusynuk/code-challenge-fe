@@ -34,9 +34,8 @@ const Login = () => {
 			setToken(res.data.token);
 
 			sessionStorage.setItem("email", email);
-			if (token) {
-				navigate("/dashboard");
-			}
+
+			navigate("/dashboard");
 		} catch (error) {
 			if (error instanceof Error) {
 				console.error(error.response.data.message);
@@ -73,7 +72,6 @@ const Login = () => {
 				<TextField
 					type="email"
 					error={Boolean(loginErrorMsg)}
-					id="solid-error-helper-text"
 					label="Email"
 					helperText={loginErrorMsg}
 					onChange={handleEmail}
@@ -82,7 +80,6 @@ const Login = () => {
 				<TextField
 					type="password"
 					error={Boolean(loginErrorMsg)}
-					id="solid-error-helper-text"
 					label="Password"
 					helperText={loginErrorMsg}
 					onChange={handlePassword}
