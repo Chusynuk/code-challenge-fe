@@ -11,7 +11,7 @@ interface ILayout {
 
 const Layout = ({ handleLogout, children }: ILayout) => {
     const location = useLocation();
-    const { isFetchError, setIsFetchError } = useContext(ErrorContext);
+    const { hasError } = useContext(ErrorContext);
     const isDashboardPage = location.pathname.includes('dashboard');
 
     return (
@@ -25,7 +25,7 @@ const Layout = ({ handleLogout, children }: ILayout) => {
             >
                 {isDashboardPage && <Header handleLogout={handleLogout} />}
 
-                {!isFetchError ? (
+                {!hasError ? (
                     <Grid flexGrow="1" alignItems="center">
                         <Box
                             display="flex"

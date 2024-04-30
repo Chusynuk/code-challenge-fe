@@ -64,7 +64,7 @@ const Dashboard = () => {
     const [rowArraySelected, setRowArraySelected] = useState(null);
     const [fetchedUsers, setFetchedUsers] = useState();
 
-    const { isFetchError, setIsFetchError } = useContext(ErrorContext);
+    const { setHasError, setErrorMessage } = useContext(ErrorContext);
 
     const [loading, setLoading] = useState(true);
     const toggleDrawer = (newOpen: boolean) => () => {
@@ -82,11 +82,6 @@ const Dashboard = () => {
                 enableColumnFilterModes: false,
                 enableGlobalFilter: false,
                 enableSorting: false,
-                // enableHiding: false,
-                // enableColumnActions: false,
-                // Cell: ({ cell, row }) => {
-                //     console.log('row', row);
-                // },
             },
             {
                 id: '1',
@@ -96,8 +91,6 @@ const Dashboard = () => {
                 enableFilterMatchHighlighting: false,
                 enableGlobalFilter: false,
                 enableSorting: false,
-                // enableHiding: false,
-                // enableColumnActions: false,
                 Cell: ({ cell, row }) => {
                     return (
                         <img
@@ -116,9 +109,6 @@ const Dashboard = () => {
                 enableFilterMatchHighlighting: true,
                 enableGlobalFilter: true,
                 enableSorting: false,
-                // enableHiding: false,
-                // enableColumnActions: false,
-
                 filterVariant: 'select',
                 filterSelectOptions: ['PENDING', 'REJECTED', 'COMPLETED'],
             },
@@ -134,8 +124,6 @@ const Dashboard = () => {
                 Cell: ({ cell }) => (
                     <Typography>{FormatDate(cell.getValue())}</Typography>
                 ),
-                // enableHiding: false,
-                // enableColumnActions: false,
             },
             {
                 id: '4',
@@ -145,8 +133,6 @@ const Dashboard = () => {
                 enableFilterMatchHighlighting: false,
                 enableGlobalFilter: false,
                 enableSorting: false,
-                // enableHiding: false,
-                // enableColumnActions: false,
             },
         ],
         []
@@ -171,8 +157,6 @@ const Dashboard = () => {
                     rowArraySelected === staticRowIndex ? 'red' : 'white',
             },
         }),
-
-        // initialState: { showGlobalFilter: true },
     });
     const handleLogout = () => {
         navigate('/login');
@@ -194,7 +178,11 @@ const Dashboard = () => {
 
                 setSmeId(res.data.id);
             } catch (error) {
-                console.log(error);
+                if (error instanceof Error) {
+                    setErrorMessage(error.message);
+                    setHasError(Boolean(error));
+                    setLoading(false);
+                }
             }
         };
         fetchSme();
@@ -217,7 +205,8 @@ const Dashboard = () => {
                 setLoading(false);
             } catch (error) {
                 if (error instanceof Error) {
-                    setIsFetchError(Boolean(error));
+                    setErrorMessage(error.message);
+                    setHasError(Boolean(error));
                     setLoading(false);
                 }
             }
@@ -239,21 +228,14 @@ const Dashboard = () => {
                 setLoading(false);
             } catch (error) {
                 if (error instanceof Error) {
-                    setIsFetchError(Boolean(error));
+                    setErrorMessage(error.message);
+                    setHasError(Boolean(error));
                     setLoading(false);
                 }
             }
         };
         fetchUsers();
     }, []);
-    console.log('fetchedUsers', fetchedUsers);
-    // const handleOnClickRow = (
-    //     e: React.MouseEvent<HTMLButtonElement>,
-    //     rowId: string
-    // ) => {
-    //     console.log('e', e);
-    //     console.log('rowId', rowId);
-    // };
 
     const selectedTransation = transactionsData[rowArraySelected];
     const user = selectedTransation
@@ -279,12 +261,7 @@ const Dashboard = () => {
             ) : (
                 <>
                     <Typography variant="h5">Dashboard</Typography>
-                    <MaterialReactTable
-                        // enablePagination={false}
-
-                        table={table}
-                    />
-                    ;
+                    <MaterialReactTable table={table} />;
                 </>
             )}
         </Layout>
