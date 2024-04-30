@@ -2,39 +2,24 @@ import {
     Box,
     CircularProgress,
     Drawer,
-    IconButton,
-    TextField,
+    TableHead,
     Typography,
 } from '@mui/material';
 
-import TableHead from '@mui/material/TableHead';
-import {
-    type ColumnDef,
-    type ColumnFiltersState,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    useReactTable,
-} from '@tanstack/react-table';
 import axios from 'axios';
 import {
     type MRT_ColumnDef,
-    MRT_FilterTextField,
-    MRT_FilterTextFieldProps,
-    MRT_GlobalFilterTextField,
     type MRT_RowSelectionState,
     MaterialReactTable,
-    getMRT_RowSelectionHandler,
     useMaterialReactTable,
 } from 'material-react-table';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { Filter } from '../components/dashboard-components';
+import { Sidebar } from '../components/dashboard-components/Sidebar';
 import { ErrorContext } from '../context/context';
 import useToken from '../hooks/useToken';
 import { FormatDate } from '../utils/DateFormatter';
-import { Sidebar } from '../components/dashboard-components/Sidebar';
 
 interface ITransactionsData {
     id: string;
@@ -46,20 +31,11 @@ interface ITransactionsData {
     currency: string;
 }
 
-enum TransactionState {
-    PENDING = 'PENDING',
-    REJECTED = 'REJECTED',
-    COMPLETED = 'COMPLETED',
-    REVERSED = 'REVERSED',
-}
-
 const Dashboard = () => {
     const navigate = useNavigate();
     const { token, setToken } = useToken();
     const [smeId, setSmeId] = useState('');
     const [transactionsData, setTransactionsData] = useState([]);
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [selectedRowId, setSelectedRowId] = useState<string>('');
     const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
     const [rowArraySelected, setRowArraySelected] = useState(null);
     const [fetchedUsers, setFetchedUsers] = useState();
@@ -67,10 +43,7 @@ const Dashboard = () => {
     const { setHasError, setErrorMessage } = useContext(ErrorContext);
 
     const [loading, setLoading] = useState(true);
-    const toggleDrawer = (newOpen: boolean) => () => {
-        setIsDrawerOpen(newOpen);
-    };
-    console.log(selectedRowId);
+
     const columns = useMemo<MRT_ColumnDef<ITransactionsData, any>[]>(
         () => [
             {
@@ -82,6 +55,7 @@ const Dashboard = () => {
                 enableColumnFilterModes: false,
                 enableGlobalFilter: false,
                 enableSorting: false,
+                enableColumnActions: false,
             },
             {
                 id: '1',
@@ -91,13 +65,15 @@ const Dashboard = () => {
                 enableFilterMatchHighlighting: false,
                 enableGlobalFilter: false,
                 enableSorting: false,
-                Cell: ({ cell, row }) => {
+                enableColumnActions: false,
+                Cell: ({ cell }) => {
                     return (
                         <img
+                            alt="icon"
                             width="25px"
                             height="25px"
                             src={cell.getValue()}
-                        ></img>
+                        />
                     );
                 },
             },
@@ -121,6 +97,7 @@ const Dashboard = () => {
                 enableFilterMatchHighlighting: false,
                 enableGlobalFilter: false,
                 enableSorting: false,
+                enableColumnActions: false,
                 Cell: ({ cell }) => (
                     <Typography>{FormatDate(cell.getValue())}</Typography>
                 ),
@@ -133,6 +110,7 @@ const Dashboard = () => {
                 enableFilterMatchHighlighting: false,
                 enableGlobalFilter: false,
                 enableSorting: false,
+                enableColumnActions: false,
             },
         ],
         []
@@ -146,7 +124,7 @@ const Dashboard = () => {
         enableRowSelection: false,
         enableMultiRowSelection: false,
 
-        muiTableBodyRowProps: ({ row, staticRowIndex, table }) => ({
+        muiTableBodyRowProps: ({ staticRowIndex }) => ({
             onClick: () => {
                 setRowArraySelected(staticRowIndex);
             },
@@ -154,10 +132,11 @@ const Dashboard = () => {
             sx: {
                 cursor: 'pointer',
                 backgroundColor:
-                    rowArraySelected === staticRowIndex ? 'red' : 'white',
+                    rowArraySelected === staticRowIndex ? 'lightgray' : 'white',
             },
         }),
     });
+
     const handleLogout = () => {
         navigate('/login');
         sessionStorage.removeItem('token');
@@ -186,7 +165,7 @@ const Dashboard = () => {
             }
         };
         fetchSme();
-    }, []);
+    }, [token, setErrorMessage, setHasError]);
 
     useEffect(() => {
         const fetchTransactionsFromSme = async () => {
@@ -200,8 +179,8 @@ const Dashboard = () => {
                         },
                     }
                 );
-                setTransactionsData(res.data.data);
 
+                setTransactionsData(res.data.data);
                 setLoading(false);
             } catch (error) {
                 if (error instanceof Error) {
@@ -213,18 +192,18 @@ const Dashboard = () => {
         };
         fetchTransactionsFromSme();
     }, []);
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/users`, {
+                const res = await axios.get('http://localhost:3000/users', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     },
                 });
-                console.log('res', res);
-                setFetchedUsers(res.data);
 
+                setFetchedUsers(res.data);
                 setLoading(false);
             } catch (error) {
                 if (error instanceof Error) {
@@ -235,7 +214,7 @@ const Dashboard = () => {
             }
         };
         fetchUsers();
-    }, []);
+    }, [setErrorMessage, setHasError, token]);
 
     const selectedTransation = transactionsData[rowArraySelected];
     const user = selectedTransation
@@ -260,8 +239,13 @@ const Dashboard = () => {
                 <CircularProgress />
             ) : (
                 <>
-                    <Typography variant="h5">Dashboard</Typography>
-                    <MaterialReactTable table={table} />;
+                    <TableHead>
+                        <Typography variant="h5">Dashboard</Typography>
+                    </TableHead>
+                    <Box width="fill-available">
+                        <MaterialReactTable table={table} />
+                    </Box>
+                    ;
                 </>
             )}
         </Layout>

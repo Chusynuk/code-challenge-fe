@@ -1,10 +1,11 @@
+import { Grid } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-interface IHeader {
+export interface IHeader {
     handleLogout?: () => void;
 }
 
@@ -13,7 +14,7 @@ const Header = ({ handleLogout }: IHeader) => {
     const smeName = sessionStorage.getItem('sme-name');
 
     return (
-        <Box>
+        <Grid>
             <AppBar position="static">
                 <Toolbar>
                     <Typography component="div" sx={{ flexGrow: 1 }}>
@@ -22,12 +23,16 @@ const Header = ({ handleLogout }: IHeader) => {
                     <Typography component="div" sx={{ flexGrow: 1 }}>
                         {smeName}
                     </Typography>
-                    <Button color="inherit" onClick={handleLogout}>
+                    <Button
+                        color="inherit"
+                        variant="outlined"
+                        onClick={handleLogout}
+                    >
                         Logout
                     </Button>
                 </Toolbar>
             </AppBar>
-        </Box>
+        </Grid>
     );
 };
 

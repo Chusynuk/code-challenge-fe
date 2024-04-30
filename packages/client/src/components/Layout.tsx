@@ -16,29 +16,21 @@ const Layout = ({ handleLogout, children }: ILayout) => {
 
     return (
         <>
-            <Grid
-                container
-                display="flex"
-                flexGrow="1"
-                flexDirection="column"
-                minHeight="95vh"
-            >
+            <Grid display="flex" flexDirection="column" minHeight="95vh">
                 {isDashboardPage && <Header handleLogout={handleLogout} />}
 
                 {!hasError ? (
-                    <Grid flexGrow="1" alignItems="center">
-                        <Box
-                            display="flex"
-                            flexDirection="column"
-                            justifyContent="center"
-                            alignItems="center"
-                            component="section"
-                            height="100%"
-                            sx={{ p: 2, border: '1px solid grey' }}
-                        >
-                            {children}
-                        </Box>
-                    </Grid>
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="center"
+                        alignItems="center"
+                        component="section"
+                        height="100%"
+                        sx={{ p: 2, border: '1px solid grey' }}
+                    >
+                        {children}
+                    </Box>
                 ) : (
                     <ErrorRequest />
                 )}

@@ -1,22 +1,26 @@
-import { Box, Typography } from '@mui/material';
-import { ErrorContext } from '../context/context';
+import { Alert, Card, CardContent, Typography } from '@mui/material';
 import { useContext } from 'react';
+import { ErrorContext } from '../context/context';
 
 const ErrorRequest = () => {
     const { errorMessage } = useContext(ErrorContext);
 
     return (
-        <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            height="100%"
+        <Card
+            style={{
+                display: 'flex',
+                flexGrow: '1',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
         >
-            <Typography variant="h4">
-                There is an issue with your request, try again
-            </Typography>
-            <Typography variant="body1">{errorMessage}</Typography>
-        </Box>
+            <CardContent>
+                <Typography variant="h4">
+                    There is an issue with your request, try again
+                </Typography>
+                <Alert severity="error">{errorMessage}</Alert>
+            </CardContent>
+        </Card>
     );
 };
 
