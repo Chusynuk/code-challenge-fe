@@ -3,6 +3,7 @@ import {
     CircularProgress,
     Drawer,
     IconButton,
+    TextField,
     Typography,
 } from '@mui/material';
 
@@ -32,7 +33,7 @@ import Layout from '../components/Layout';
 import { Filter } from '../components/dashboard-components';
 import { ErrorContext } from '../context/context';
 import useToken from '../hooks/useToken';
-import { FormatDate } from '../utils/formatDate';
+import { FormatDate } from '../utils/DateFormatter';
 import { Sidebar } from '../components/dashboard-components/Sidebar';
 
 interface ITransactionsData {
@@ -80,8 +81,8 @@ const Dashboard = () => {
                 enableColumnFilterModes: false,
                 enableGlobalFilter: false,
                 enableSorting: false,
-                enableHiding: false,
-                enableColumnActions: false,
+                // enableHiding: false,
+                // enableColumnActions: false,
                 // Cell: ({ cell, row }) => {
                 //     console.log('row', row);
                 // },
@@ -94,8 +95,8 @@ const Dashboard = () => {
                 enableFilterMatchHighlighting: false,
                 enableGlobalFilter: false,
                 enableSorting: false,
-                enableHiding: false,
-                enableColumnActions: false,
+                // enableHiding: false,
+                // enableColumnActions: false,
                 Cell: ({ cell, row }) => {
                     return (
                         <img
@@ -114,8 +115,11 @@ const Dashboard = () => {
                 enableFilterMatchHighlighting: true,
                 enableGlobalFilter: true,
                 enableSorting: false,
-                enableHiding: false,
-                enableColumnActions: false,
+                // enableHiding: false,
+                // enableColumnActions: false,
+
+                filterVariant: 'select',
+                filterSelectOptions: ['PENDING', 'REJECTED', 'COMPLETED'],
             },
 
             {
@@ -126,8 +130,11 @@ const Dashboard = () => {
                 enableFilterMatchHighlighting: false,
                 enableGlobalFilter: false,
                 enableSorting: false,
-                enableHiding: false,
-                enableColumnActions: false,
+                Cell: ({ cell }) => (
+                    <Typography>{FormatDate(cell.getValue())}</Typography>
+                ),
+                // enableHiding: false,
+                // enableColumnActions: false,
             },
             {
                 id: '4',
@@ -137,8 +144,8 @@ const Dashboard = () => {
                 enableFilterMatchHighlighting: false,
                 enableGlobalFilter: false,
                 enableSorting: false,
-                enableHiding: false,
-                enableColumnActions: false,
+                // enableHiding: false,
+                // enableColumnActions: false,
             },
         ],
         []
@@ -232,7 +239,11 @@ const Dashboard = () => {
                 open={rowArraySelected !== null}
                 onClose={() => setRowArraySelected(null)}
             >
-                <Sidebar transactionData={transactionsData[rowArraySelected]} />
+                {rowArraySelected !== null && (
+                    <Sidebar
+                        transactionData={transactionsData[rowArraySelected]}
+                    />
+                )}
             </Drawer>
             {loading ? (
                 <CircularProgress />
