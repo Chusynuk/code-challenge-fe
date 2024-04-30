@@ -35,6 +35,7 @@ import useToken from '../hooks/useToken';
 import { FormatDate } from '../utils/formatDate';
 
 interface ITransactionsData {
+    id: string;
     merchantName: string;
     merchantIconUrl: string;
     status: string;
@@ -56,21 +57,20 @@ const Dashboard = () => {
     const [smeId, setSmeId] = useState('');
     const [transactionsData, setTransactionsData] = useState([]);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [hoveredCell, setHoveredCell] = useState(false);
-    const [showStatusFilter, setShowStatusFilter] = useState(false);
-    const { isFetchError, setIsFetchError } = useContext(ErrorContext);
-    const [headerColumn, setHeaderColumn] = useState();
-    const [loading, setLoading] = useState(true);
+    const [selectedRowId, setSelectedRowId] = useState<string>('');
     const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+    const { isFetchError, setIsFetchError } = useContext(ErrorContext);
+
+    const [loading, setLoading] = useState(true);
     const toggleDrawer = (newOpen: boolean) => () => {
         setIsDrawerOpen(newOpen);
     };
-
+    console.log(selectedRowId);
     const columns = useMemo<MRT_ColumnDef<ITransactionsData, any>[]>(
         () => [
             {
-                id: 'name',
+                id: '0',
                 accessorKey: 'merchantName',
                 header: 'Name',
                 enableColumnFilter: false,
@@ -80,9 +80,12 @@ const Dashboard = () => {
                 enableSorting: false,
                 enableHiding: false,
                 enableColumnActions: false,
+                // Cell: ({ cell, row }) => {
+                //     console.log('row', row);
+                // },
             },
             {
-                id: 'merchant',
+                id: '1',
                 accessorKey: 'merchantIconUrl',
                 header: 'Merchant',
                 enableColumnFilter: false,
@@ -91,9 +94,18 @@ const Dashboard = () => {
                 enableSorting: false,
                 enableHiding: false,
                 enableColumnActions: false,
+                Cell: ({ cell, row }) => {
+                    return (
+                        <img
+                            width="25px"
+                            height="25px"
+                            src={cell.getValue()}
+                        ></img>
+                    );
+                },
             },
             {
-                id: 'status',
+                id: '2',
                 accessorKey: 'status',
                 header: 'Status',
                 enableColumnFilter: true,
@@ -105,7 +117,7 @@ const Dashboard = () => {
             },
 
             {
-                id: 'date',
+                id: '3',
                 accessorKey: 'transactionTime',
                 header: 'Date',
                 enableColumnFilter: false,
@@ -116,7 +128,7 @@ const Dashboard = () => {
                 enableColumnActions: false,
             },
             {
-                id: 'amount',
+                id: '4',
                 accessorFn: (row) => `${row.amount} ${row.currency}`,
                 header: 'Amount',
                 enableColumnFilter: false,
@@ -131,43 +143,22 @@ const Dashboard = () => {
     );
     const table = useMaterialReactTable({
         columns,
-        data: transactionsData, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+        data: transactionsData,
         enableStickyFooter: false,
         enableBottomToolbar: false,
         enableTopToolbar: true,
-        renderRowActions: ({ row }) => {
-            return (
-                <Box>
-                    <Box onClick={() => console.log(row.original)}>HEYYYY</Box>
-                </Box>
-            );
-        },
+        enableRowSelection: false,
+        enableMultiRowSelection: false,
 
-        // enableRowSelection: true,
-        // muiTableBodyRowProps: ({ row, staticRowIndex, table }) => ({
-        // 	onClick: (event) => {
-        // 		getMRT_RowSelectionHandler({ row, staticRowIndex, table })(event), sx;
-        // 		:
-        // 		cursor: "pointer";
-        // 		,
-        // 	},
-        // }),
-        muiTableBodyRowProps: ({ row }) => ({
-            onClick: (event) => {
-                // console.log('event.target.name', event.target);
-                console.info(event, row.id);
-            },
+        muiTableBodyRowProps: ({ row, staticRowIndex, table }) => ({
+            onClick: () => setSelectedRowId(row.id),
             sx: {
-                cursor: 'pointer', //you might want to change the cursor too when adding an onClick
+                cursor: 'pointer',
+                backgroundColor: row.id === selectedRowId ? 'red' : 'white',
             },
         }),
-        // enableFilters: true,
-        initialState: { showGlobalFilter: true },
-        // renderToolbarInternalActions: ({ table }) => (
-        //     <>
-        //         <MRT_GlobalFilterTextField table={table} />
-        //     </>
-        // ),
+
+        // initialState: { showGlobalFilter: true },
     });
     const handleLogout = () => {
         navigate('/login');
@@ -175,7 +166,6 @@ const Dashboard = () => {
         sessionStorage.removeItem('email');
         sessionStorage.removeItem('sme-name');
     };
-    // console.log('rowSelection', rowSelection);
 
     useEffect(() => {
         const fetchSme = async () => {
