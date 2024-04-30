@@ -7,10 +7,13 @@ import {
     ListItemIcon,
 } from '@mui/material';
 
-const Sidebar = (
-    <Box sx={{ width: 250 }} role="presentation">
-        <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+const Sidebar = ({ transactionData }) => {
+    console.log('transactionData', transactionData);
+
+    return (
+        <Box sx={{ width: 250 }} role="presentation">
+            <List>
+                {/* {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                 <ListItem key={text} disablePadding>
                     <ListItemButton>
                         <ListItemIcon></ListItemIcon>
@@ -28,9 +31,10 @@ const Sidebar = (
                         <ListItemText primary={text} />
                     </ListItemButton>
                 </ListItem>
-            ))}
-        </List>
-    </Box>
-);
+            ))} */}
+            </List>
+        </Box>
+    );
+};
 
 export { Sidebar };

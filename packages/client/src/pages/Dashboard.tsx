@@ -33,6 +33,7 @@ import { Filter } from '../components/dashboard-components';
 import { ErrorContext } from '../context/context';
 import useToken from '../hooks/useToken';
 import { FormatDate } from '../utils/formatDate';
+import { Sidebar } from '../components/dashboard-components/Sidebar';
 
 interface ITransactionsData {
     id: string;
@@ -59,6 +60,7 @@ const Dashboard = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedRowId, setSelectedRowId] = useState<string>('');
     const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+    const [rowArraySelected, setRowArraySelected] = useState(null);
 
     const { isFetchError, setIsFetchError } = useContext(ErrorContext);
 
@@ -151,10 +153,14 @@ const Dashboard = () => {
         enableMultiRowSelection: false,
 
         muiTableBodyRowProps: ({ row, staticRowIndex, table }) => ({
-            onClick: () => setSelectedRowId(row.id),
+            onClick: () => {
+                setRowArraySelected(staticRowIndex);
+            },
+
             sx: {
                 cursor: 'pointer',
-                backgroundColor: row.id === selectedRowId ? 'red' : 'white',
+                backgroundColor:
+                    rowArraySelected === staticRowIndex ? 'red' : 'white',
             },
         }),
 
@@ -221,15 +227,13 @@ const Dashboard = () => {
 
     return (
         <Layout handleLogout={handleLogout}>
-            {/* <Box display="flex" width="100%">
-                <Typography variant="h5">Dashboard</Typography>
-            </Box> */}
-            {/* <button type="button" onClick={() => setIsDrawerOpen(true)}>
-                toggle drawer
-            </button>
-            <Drawer open={isDrawerOpen} onClose={toggleDrawer(false)}>
-                {DrawerList}
-            </Drawer> */}
+            <Drawer
+                anchor="right"
+                open={rowArraySelected !== null}
+                onClose={() => setRowArraySelected(null)}
+            >
+                <Sidebar transactionData={transactionsData[rowArraySelected]} />
+            </Drawer>
             {loading ? (
                 <CircularProgress />
             ) : (
