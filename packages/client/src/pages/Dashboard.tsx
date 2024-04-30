@@ -62,6 +62,7 @@ const Dashboard = () => {
     const [selectedRowId, setSelectedRowId] = useState<string>('');
     const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
     const [rowArraySelected, setRowArraySelected] = useState(null);
+    const [fetchedUsers, setFetchedUsers] = useState();
 
     const { isFetchError, setIsFetchError } = useContext(ErrorContext);
 
@@ -223,14 +224,41 @@ const Dashboard = () => {
         };
         fetchTransactionsFromSme();
     }, []);
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const res = await axios.get(`http://localhost:3000/users`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                console.log('res', res);
+                setFetchedUsers(res.data);
 
-    const handleOnClickRow = (
-        e: React.MouseEvent<HTMLButtonElement>,
-        rowId: string
-    ) => {
-        console.log('e', e);
-        console.log('rowId', rowId);
-    };
+                setLoading(false);
+            } catch (error) {
+                if (error instanceof Error) {
+                    setIsFetchError(Boolean(error));
+                    setLoading(false);
+                }
+            }
+        };
+        fetchUsers();
+    }, []);
+    console.log('fetchedUsers', fetchedUsers);
+    // const handleOnClickRow = (
+    //     e: React.MouseEvent<HTMLButtonElement>,
+    //     rowId: string
+    // ) => {
+    //     console.log('e', e);
+    //     console.log('rowId', rowId);
+    // };
+
+    const selectedTransation = transactionsData[rowArraySelected];
+    const user = selectedTransation
+        ? fetchedUsers.find((user) => user.id === selectedTransation.userId)
+        : null;
 
     return (
         <Layout handleLogout={handleLogout}>
@@ -241,6 +269,7 @@ const Dashboard = () => {
             >
                 {rowArraySelected !== null && (
                     <Sidebar
+                        user={user.name}
                         transactionData={transactionsData[rowArraySelected]}
                     />
                 )}
