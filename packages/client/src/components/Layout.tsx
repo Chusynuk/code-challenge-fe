@@ -1,7 +1,7 @@
 import { Box, Grid } from '@mui/material';
 import { useContext } from 'react';
 import { useLocation } from 'react-router-dom';
-import ErrorContext from '../context/context';
+import { ErrorContext } from '../context/context';
 import { ErrorRequest, Header } from './';
 
 interface ILayout {

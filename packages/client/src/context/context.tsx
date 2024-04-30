@@ -1,8 +1,8 @@
-import { createContext } from 'react'
+import { createContext } from 'react';
 
 const ErrorContext = createContext({
-    isFetchError: '',
-    setIsFetchError: () => {},
-})
+    isFetchError: false,
+    setIsFetchError: (isFetchError: boolean) => {},
+});
 
-export default ErrorContext
+export { ErrorContext };

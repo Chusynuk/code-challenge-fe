@@ -1,5 +1,12 @@
-import { Box, CircularProgress, Drawer, Typography } from '@mui/material';
+import {
+    Box,
+    CircularProgress,
+    Drawer,
+    IconButton,
+    Typography,
+} from '@mui/material';
 
+import TableHead from '@mui/material/TableHead';
 import {
     type ColumnDef,
     type ColumnFiltersState,
@@ -11,14 +18,19 @@ import {
 import axios from 'axios';
 import {
     type MRT_ColumnDef,
+    MRT_FilterTextField,
+    MRT_FilterTextFieldProps,
+    MRT_GlobalFilterTextField,
+    type MRT_RowSelectionState,
     MaterialReactTable,
+    getMRT_RowSelectionHandler,
     useMaterialReactTable,
 } from 'material-react-table';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Filter } from '../components/dashboard-components';
-import ErrorContext from '../context/context';
+import { ErrorContext } from '../context/context';
 import useToken from '../hooks/useToken';
 import { FormatDate } from '../utils/formatDate';
 
@@ -49,6 +61,7 @@ const Dashboard = () => {
     const { isFetchError, setIsFetchError } = useContext(ErrorContext);
     const [headerColumn, setHeaderColumn] = useState();
     const [loading, setLoading] = useState(true);
+    const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const toggleDrawer = (newOpen: boolean) => () => {
         setIsDrawerOpen(newOpen);
@@ -57,34 +70,50 @@ const Dashboard = () => {
     const columns = useMemo<MRT_ColumnDef<ITransactionsData, any>[]>(
         () => [
             {
+                id: 'name',
                 accessorKey: 'merchantName',
                 header: 'Name',
                 enableColumnFilter: false,
                 enableFilterMatchHighlighting: false,
                 enableColumnFilterModes: false,
                 enableGlobalFilter: false,
+                enableSorting: false,
+                enableHiding: false,
+                enableColumnActions: false,
             },
             {
+                id: 'merchant',
                 accessorKey: 'merchantIconUrl',
                 header: 'Merchant',
                 enableColumnFilter: false,
                 enableFilterMatchHighlighting: false,
                 enableGlobalFilter: false,
+                enableSorting: false,
+                enableHiding: false,
+                enableColumnActions: false,
             },
             {
+                id: 'status',
                 accessorKey: 'status',
                 header: 'Status',
                 enableColumnFilter: true,
                 enableFilterMatchHighlighting: true,
                 enableGlobalFilter: true,
+                enableSorting: false,
+                enableHiding: false,
+                enableColumnActions: false,
             },
 
             {
+                id: 'date',
                 accessorKey: 'transactionTime',
                 header: 'Date',
                 enableColumnFilter: false,
                 enableFilterMatchHighlighting: false,
                 enableGlobalFilter: false,
+                enableSorting: false,
+                enableHiding: false,
+                enableColumnActions: false,
             },
             {
                 id: 'amount',
@@ -93,6 +122,9 @@ const Dashboard = () => {
                 enableColumnFilter: false,
                 enableFilterMatchHighlighting: false,
                 enableGlobalFilter: false,
+                enableSorting: false,
+                enableHiding: false,
+                enableColumnActions: false,
             },
         ],
         []
@@ -100,6 +132,42 @@ const Dashboard = () => {
     const table = useMaterialReactTable({
         columns,
         data: transactionsData, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+        enableStickyFooter: false,
+        enableBottomToolbar: false,
+        enableTopToolbar: true,
+        renderRowActions: ({ row }) => {
+            return (
+                <Box>
+                    <Box onClick={() => console.log(row.original)}>HEYYYY</Box>
+                </Box>
+            );
+        },
+
+        // enableRowSelection: true,
+        // muiTableBodyRowProps: ({ row, staticRowIndex, table }) => ({
+        // 	onClick: (event) => {
+        // 		getMRT_RowSelectionHandler({ row, staticRowIndex, table })(event), sx;
+        // 		:
+        // 		cursor: "pointer";
+        // 		,
+        // 	},
+        // }),
+        muiTableBodyRowProps: ({ row }) => ({
+            onClick: (event) => {
+                // console.log('event.target.name', event.target);
+                console.info(event, row.id);
+            },
+            sx: {
+                cursor: 'pointer', //you might want to change the cursor too when adding an onClick
+            },
+        }),
+        // enableFilters: true,
+        initialState: { showGlobalFilter: true },
+        // renderToolbarInternalActions: ({ table }) => (
+        //     <>
+        //         <MRT_GlobalFilterTextField table={table} />
+        //     </>
+        // ),
     });
     const handleLogout = () => {
         navigate('/login');
@@ -107,6 +175,7 @@ const Dashboard = () => {
         sessionStorage.removeItem('email');
         sessionStorage.removeItem('sme-name');
     };
+    // console.log('rowSelection', rowSelection);
 
     useEffect(() => {
         const fetchSme = async () => {
@@ -143,8 +212,10 @@ const Dashboard = () => {
 
                 setLoading(false);
             } catch (error) {
-                setIsFetchError(Boolean(error.response.data.message));
-                setLoading(false);
+                if (error instanceof Error) {
+                    setIsFetchError(Boolean(error));
+                    setLoading(false);
+                }
             }
         };
         fetchTransactionsFromSme();
@@ -160,9 +231,9 @@ const Dashboard = () => {
 
     return (
         <Layout handleLogout={handleLogout}>
-            <Box display="flex" width="100%">
+            {/* <Box display="flex" width="100%">
                 <Typography variant="h5">Dashboard</Typography>
-            </Box>
+            </Box> */}
             {/* <button type="button" onClick={() => setIsDrawerOpen(true)}>
                 toggle drawer
             </button>
@@ -173,7 +244,13 @@ const Dashboard = () => {
                 <CircularProgress />
             ) : (
                 <>
-                    <MaterialReactTable table={table} />;
+                    <Typography variant="h5">Dashboard</Typography>
+                    <MaterialReactTable
+                        // enablePagination={false}
+
+                        table={table}
+                    />
+                    ;
                 </>
             )}
         </Layout>

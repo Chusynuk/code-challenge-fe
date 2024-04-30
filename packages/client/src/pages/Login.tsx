@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '../components';
-import ErrorContext from '../context/context';
+import { ErrorContext } from '../context/context';
 import useToken from '../hooks/useToken';
 
 const Login = () => {
@@ -40,9 +40,8 @@ const Login = () => {
 
             navigate('/dashboard');
         } catch (error) {
-            setIsFetchError(error);
+            // setIsFetchError(error);
             if (error instanceof Error) {
-                console.error(error.response.data.message);
                 setLoginErrorMsg(error.response.data.message);
             }
         }
